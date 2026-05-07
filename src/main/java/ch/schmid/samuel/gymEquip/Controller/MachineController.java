@@ -9,6 +9,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import ch.schmid.samuel.gymEquip.Model.Machine;
 import ch.schmid.samuel.gymEquip.Service.MachineService.MachineService;
@@ -29,6 +32,11 @@ public class MachineController {
     @PreAuthorize(Roles.CanRead)
     @Operation(summary = "Get all machines", 
         description = "Returns all machines. Requires read, update, or admin privileges.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Machines returned successfully"),
+            @ApiResponse(responseCode = "401", description = "Authentication required"),
+            @ApiResponse(responseCode = "403", description = "Access denied")
+    })
     public ResponseEntity<List<Machine>> getAllMachines() {
         List<Machine> machines = machineService.getAllMachines();
         return new ResponseEntity<>(machines, HttpStatus.OK);
@@ -38,7 +46,13 @@ public class MachineController {
     @PreAuthorize(Roles.CanRead)
     @Operation(summary = "Get a machine by ID", 
         description = "Returns the machine with the specified ID. Requires read, update, or admin privileges.")
-    public ResponseEntity<Machine> getMachineById(@PathVariable Long id) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Machine returned successfully"),
+            @ApiResponse(responseCode = "401", description = "Authentication required"),
+            @ApiResponse(responseCode = "403", description = "Access denied"),
+            @ApiResponse(responseCode = "404", description = "Machine not found")
+    })
+    public ResponseEntity<Machine> getMachineById(@Parameter(description = "ID of the machine") @PathVariable Long id) {
         Machine machine = machineService.getMachineById(id);
         return new ResponseEntity<>(machine, HttpStatus.OK);
     }
@@ -47,7 +61,13 @@ public class MachineController {
     @PreAuthorize(Roles.IsAdmin)
     @Operation(summary = "Create a machine", 
         description = "Creates a new machine. Requires admin privileges.")
-    public ResponseEntity<Machine> createMachine(@Valid @RequestBody Machine machine) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Machine created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid machine data"),
+            @ApiResponse(responseCode = "401", description = "Authentication required"),
+            @ApiResponse(responseCode = "403", description = "Access denied")
+    })
+    public ResponseEntity<Machine> createMachine(@Parameter(description = "Machine data to create") @Valid @RequestBody Machine machine) {
         Machine createdMachine = machineService.createMachine(machine);
         return new ResponseEntity<>(createdMachine, HttpStatus.CREATED);
     }
@@ -56,9 +76,16 @@ public class MachineController {
     @PreAuthorize(Roles.CanUpdate)
     @Operation(summary = "Update a machine by ID", 
         description = "Updates the machine with the specified ID. Requires update or admin privileges.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Machine updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid machine data"),
+            @ApiResponse(responseCode = "401", description = "Authentication required"),
+            @ApiResponse(responseCode = "403", description = "Access denied"),
+            @ApiResponse(responseCode = "404", description = "Machine not found")
+    })
     public ResponseEntity<Machine> updateMachine(
-            @PathVariable Long id,
-            @Valid @RequestBody Machine machine) {
+            @Parameter(description = "ID of the machine") @PathVariable Long id,
+            @Parameter(description = "Updated machine data") @Valid @RequestBody Machine machine) {
         Machine updatedMachine = machineService.updateMachine(id, machine);
         return new ResponseEntity<>(updatedMachine, HttpStatus.OK);
     }
@@ -67,7 +94,13 @@ public class MachineController {
     @PreAuthorize(Roles.IsAdmin)
     @Operation(summary = "Delete a machine by ID", 
         description = "Deletes the machine with the specified ID. Requires admin privileges.")
-    public ResponseEntity<Void> deleteMachine(@PathVariable Long id) {
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Machine deleted successfully"),
+            @ApiResponse(responseCode = "401", description = "Authentication required"),
+            @ApiResponse(responseCode = "403", description = "Access denied"),
+            @ApiResponse(responseCode = "404", description = "Machine not found")
+    })
+    public ResponseEntity<Void> deleteMachine(@Parameter(description = "ID of the machine") @PathVariable Long id) {
         machineService.deleteMachine(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
