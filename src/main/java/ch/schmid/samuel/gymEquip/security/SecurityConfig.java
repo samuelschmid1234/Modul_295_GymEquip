@@ -17,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(jsr250Enabled = true)
+@EnableMethodSecurity(jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfig {
 
     @Value("${app.name}")
@@ -57,6 +57,7 @@ public class SecurityConfig {
     }
 
     @GetMapping("/oidc-principal")
+    @org.springframework.security.access.prepost.PreAuthorize(Roles.CanRead)
     public OidcUser getOidcUserPrincipal(
             @AuthenticationPrincipal OidcUser principal) {
         return principal;

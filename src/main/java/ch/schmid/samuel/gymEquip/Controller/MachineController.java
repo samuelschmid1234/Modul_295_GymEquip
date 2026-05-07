@@ -2,6 +2,7 @@ package ch.schmid.samuel.gymEquip.Controller;
 
 import lombok.AllArgsConstructor;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import ch.schmid.samuel.gymEquip.Model.Machine;
 import ch.schmid.samuel.gymEquip.Service.MachineService.MachineService;
+import ch.schmid.samuel.gymEquip.security.Roles;
 
 import java.util.List;
 
@@ -23,24 +25,28 @@ public class MachineController {
     private final MachineService machineService;
 
     @GetMapping
+    @PreAuthorize(Roles.CanRead)
     public ResponseEntity<List<Machine>> getAllMachines() {
         List<Machine> machines = machineService.getAllMachines();
         return new ResponseEntity<>(machines, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize(Roles.CanRead)
     public ResponseEntity<Machine> getMachineById(@PathVariable Long id) {
         Machine machine = machineService.getMachineById(id);
         return new ResponseEntity<>(machine, HttpStatus.OK);
     }
 
     @PostMapping
+    @PreAuthorize(Roles.IsAdmin)
     public ResponseEntity<Machine> createMachine(@Valid @RequestBody Machine machine) {
         Machine createdMachine = machineService.createMachine(machine);
         return new ResponseEntity<>(createdMachine, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize(Roles.CanUpdate)
     public ResponseEntity<Machine> updateMachine(
             @PathVariable Long id,
             @Valid @RequestBody Machine machine) {
@@ -49,6 +55,7 @@ public class MachineController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize(Roles.IsAdmin)
     public ResponseEntity<Void> deleteMachine(@PathVariable Long id) {
         machineService.deleteMachine(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

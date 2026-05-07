@@ -2,6 +2,7 @@ package ch.schmid.samuel.gymEquip.Controller;
 
 import lombok.AllArgsConstructor;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import ch.schmid.samuel.gymEquip.Model.AccessorySet;
 import ch.schmid.samuel.gymEquip.Service.AccessorySetService.AccessorySetService;
+import ch.schmid.samuel.gymEquip.security.Roles;
 
 import java.util.List;
 
@@ -23,24 +25,28 @@ public class AccessorySetController {
     AccessorySetService accessorySetService;
 
     @GetMapping
+    @PreAuthorize(Roles.CanRead)
     public ResponseEntity<List<AccessorySet>> getAllAccessorySets() {
         List<AccessorySet> accessorySets = accessorySetService.getAllAccessorySets();
         return new ResponseEntity<>(accessorySets, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize(Roles.CanRead)
     public ResponseEntity<AccessorySet> getAccessorySetById(@PathVariable Long id) {
         AccessorySet accessorySet = accessorySetService.getAccessorySetById(id);
         return new ResponseEntity<>(accessorySet, HttpStatus.OK);
     }
 
     @PostMapping
+    @PreAuthorize(Roles.IsAdmin)
     public ResponseEntity<AccessorySet> createAccessorySet(@Valid @RequestBody AccessorySet accessorySet) {
         AccessorySet createdSet = accessorySetService.createAccessorySet(accessorySet);
         return new ResponseEntity<>(createdSet, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize(Roles.CanUpdate)
     public ResponseEntity<AccessorySet> updateAccessorySet(
             @PathVariable Long id,
             @Valid @RequestBody AccessorySet accessorySet) {
@@ -49,6 +55,7 @@ public class AccessorySetController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize(Roles.IsAdmin)
     public ResponseEntity<Void> deleteAccessorySet(@PathVariable Long id) {
         accessorySetService.deleteAccessorySet(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
