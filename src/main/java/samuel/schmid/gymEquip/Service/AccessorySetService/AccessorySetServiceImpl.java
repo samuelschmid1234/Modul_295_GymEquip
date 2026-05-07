@@ -20,25 +20,19 @@ public class AccessorySetServiceImpl implements AccessorySetService{
 
     @Override
     public AccessorySet getAccessorySetById(Long id) {
-
-        if (accessorySetRepository.findById(id).isEmpty()){
-            return null;
-        }
-
-        return accessorySetRepository.findById(id).get();
+        return accessorySetRepository.findById(id).orElse(null);
     }
 
     @Override
     public AccessorySet updateAccessorySet(Long id, AccessorySet accessorySet) {
-        if (accessorySetRepository.findById(id).isEmpty()){
+        AccessorySet existingAccessorySet = accessorySetRepository.findById(id).orElse(null);
+        if (existingAccessorySet == null) {
             return null;
         }
 
-        AccessorySet updateAccessorySet = accessorySetRepository.findById(id).get();
+        existingAccessorySet.setAccessoryList(accessorySet.getAccessoryList());
 
-        updateAccessorySet.setAccessoryList(accessorySet.getAccessoryList());
-
-        return accessorySetRepository.save(updateAccessorySet);
+        return accessorySetRepository.save(existingAccessorySet);
     }
 
     @Override

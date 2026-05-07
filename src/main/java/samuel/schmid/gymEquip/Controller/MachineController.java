@@ -1,6 +1,7 @@
 package samuel.schmid.gymEquip.Controller;
 
 import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +35,7 @@ public class MachineController {
     }
 
     @PostMapping
-    public ResponseEntity<Machine> createMachine(@RequestBody Machine machine) {
+    public ResponseEntity<Machine> createMachine(@Valid @RequestBody Machine machine) {
         Machine createdMachine = machineService.createMachine(machine);
         return new ResponseEntity<>(createdMachine, HttpStatus.CREATED);
     }
@@ -42,14 +43,14 @@ public class MachineController {
     @PutMapping("/{id}")
     public ResponseEntity<Machine> updateMachine(
             @PathVariable Long id,
-            @RequestBody Machine machine) {
+            @Valid @RequestBody Machine machine) {
         Machine updatedMachine = machineService.updateMachine(id, machine);
         return new ResponseEntity<>(updatedMachine, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public HttpStatus deleteMachine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMachine(@PathVariable Long id) {
         machineService.deleteMachine(id);
-        return HttpStatus.OK;
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -1,6 +1,7 @@
 package samuel.schmid.gymEquip.Controller;
 
 import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -34,13 +35,13 @@ public class AccessoryTypeController {
     }
 
     @PostMapping
-    public ResponseEntity<AccessoryType> createAccessoryType(@RequestBody AccessoryType accessoryType) {
+    public ResponseEntity<AccessoryType> createAccessoryType(@Valid @RequestBody AccessoryType accessoryType) {
         AccessoryType createdAccessoryType = accessoryTypeService.createAccessoryType(accessoryType);
         return new ResponseEntity<>(createdAccessoryType, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AccessoryType> updateAccessoryType(@PathVariable Long id, @RequestBody AccessoryType accessoryType) {
+    public ResponseEntity<AccessoryType> updateAccessoryType(@PathVariable Long id, @Valid @RequestBody AccessoryType accessoryType) {
         AccessoryType updatedAccessoryType = accessoryTypeService.updateAccessoryType(id, accessoryType);
         return new ResponseEntity<>(updatedAccessoryType, HttpStatus.OK);
     }

@@ -6,7 +6,6 @@ import samuel.schmid.gymEquip.Repository.MachineRepository;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -22,36 +21,29 @@ public class MachineServiceImpl implements MachineService{
 
     @Override
     public Machine getMachineById(Long id) {
-
-        if (machineRepository.findById(id).isEmpty()){
-            return null;
-        }
-
-        return machineRepository.findById(id).get();
+        return machineRepository.findById(id).orElse(null);
     }
 
     @Override
     public Machine updateMachine(Long id, Machine machine) {
-
-        if (machineRepository.findById(id).isEmpty()){
+        Machine existingMachine = machineRepository.findById(id).orElse(null);
+        if (existingMachine == null) {
             return null;
         }
 
-        Machine updateMachine = machineRepository.findById(id).get();
+        existingMachine.setStatus(machine.getStatus());
+        existingMachine.setBrand(machine.getBrand());
+        existingMachine.setCategory(machine.getCategory());
+        existingMachine.setComment(machine.getComment());
+        existingMachine.setName(machine.getName());
+        existingMachine.setLastRestoration(machine.getLastRestoration());
+        existingMachine.setNextRestoration(machine.getNextRestoration());
+        existingMachine.setSerialNumber(machine.getSerialNumber());
+        existingMachine.setPrice(machine.getPrice());
+        existingMachine.setPurchaseDate(machine.getPurchaseDate());
+        existingMachine.setType(machine.getType());
 
-        updateMachine.setStatus(machine.getStatus());
-        updateMachine.setBrand(machine.getBrand());
-        updateMachine.setCategory(machine.getCategory());
-        updateMachine.setComment(machine.getComment());
-        updateMachine.setName(machine.getName());
-        updateMachine.setLastRestoration(machine.getLastRestoration());
-        updateMachine.setNextRestoration(machine.getNextRestoration());
-        updateMachine.setSerialNumber(machine.getSerialNumber());
-        updateMachine.setPrice(machine.getPrice());
-        updateMachine.setPurchaseDate(machine.getPurchaseDate());
-        updateMachine.setType(machine.getType());
-
-        return machineRepository.save(updateMachine);
+        return machineRepository.save(existingMachine);
     }
 
     @Override
