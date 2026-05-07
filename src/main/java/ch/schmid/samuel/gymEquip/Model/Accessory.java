@@ -1,5 +1,6 @@
 package ch.schmid.samuel.gymEquip.Model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.*;
@@ -7,6 +8,7 @@ import lombok.Data;
 
 @Data
 @Embeddable
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Accessory {
 
     @NotNull(message = "Accessory type is required")

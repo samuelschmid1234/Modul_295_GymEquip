@@ -1,5 +1,8 @@
 package ch.schmid.samuel.gymEquip.Model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,10 +15,12 @@ import java.time.LocalDateTime;
 
 @Data
 @MappedSuperclass
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class InventoryItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long id;
 
     @NotBlank(message = "Name is required")
@@ -23,6 +28,7 @@ public abstract class InventoryItem {
     private String name;
 
     @NotNull(message = "Purchase date is required")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime purchaseDate;
 
     @Min(value = 0, message = "Price cannot be negative")

@@ -1,5 +1,6 @@
 package ch.schmid.samuel.gymEquip.Model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -16,8 +17,10 @@ public class Machine extends InventoryItem{
     @Size(max = 100, message = "Serial number must not exceed 100 characters")
     private String serialNumber;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime lastRestoration;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime nextRestoration;
 
     @NotNull(message = "Status is required")
